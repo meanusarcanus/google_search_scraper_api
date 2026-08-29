@@ -2,11 +2,15 @@
   "actorSpecification": 1,
   "name": "google-serp-ai",
   "title": "Google SERP & Search Intelligence Extractor Pro",
-  "description": "Extract organic search rankings, sponsored ads, People Also Ask queries, and rich snippets directly from Google SERPs. Custom geographic targeting, language selection, and structured JSON export.",
+  "description": "Extract organic search rankings, sponsored ads, People Also Ask queries, and rich snippets directly from Google SERPs. Custom geographic targeting, language selection, and structured JSON export. Just $2.49/1k results!",
   "version": "1.0.0",
   "meta": {
-    "templateId": "python-start"
+    "category": "SEO_TOOLS"
   },
+  "dockerfile": "./Dockerfile",
   "input": "./input_schema.json",
-  "dockerfile": "../Dockerfile"
+  "output": "./output_schema.json",
+  "storages": {
+    "dataset": "./dataset_schema.json"
+  }
 }

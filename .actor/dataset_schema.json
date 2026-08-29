@@ -1,0 +1,77 @@
+{
+  "actorSpecification": 1,
+  "fields": {
+    "search_query": {
+      "type": "string",
+      "description": "The search query executed on Google SERP",
+      "example": "What are the top 5 CRM tools"
+    },
+    "country_code": {
+      "type": "string",
+      "description": "Two-letter ISO geographic country code",
+      "example": "us"
+    },
+    "language_code": {
+      "type": "string",
+      "description": "Two-letter search language code",
+      "example": "en"
+    },
+    "pages_scraped": {
+      "type": "integer",
+      "description": "Total number of SERP pages scraped",
+      "example": 1
+    },
+    "total_organic_results": {
+      "type": "integer",
+      "description": "Count of organic search results extracted",
+      "example": 10
+    },
+    "organic_results": {
+      "type": "array",
+      "description": "List of organic ranking items with title, URL, domain, and snippet"
+    },
+    "people_also_ask": {
+      "type": "array",
+      "description": "Related questions and answer snippets from People Also Ask"
+    },
+    "sponsored_ads": {
+      "type": "array",
+      "description": "Sponsored Google PPC ad listings"
+    }
+  },
+  "views": {
+    "overview": {
+      "title": "Overview",
+      "description": "High-level SERP overview and ranking counts",
+      "transformation": {
+        "fields": [
+          "search_query",
+          "country_code",
+          "total_organic_results",
+          "pages_scraped"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "columns": {
+          "search_query": {
+            "label": "Search Query",
+            "format": "text"
+          },
+          "country_code": {
+            "label": "Country",
+            "format": "text"
+          },
+          "total_organic_results": {
+            "label": "Organic Count",
+            "format": "number"
+          },
+          "pages_scraped": {
+            "label": "Pages",
+            "format": "number"
+          }
+        }
+      }
+    }
+  }
+}
