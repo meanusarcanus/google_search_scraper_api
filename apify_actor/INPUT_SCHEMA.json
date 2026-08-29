@@ -1,0 +1,52 @@
+{
+  "title": "Google SERP & Search Intelligence Extractor Input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "search_queries": {
+      "title": "Search Queries / Topics",
+      "type": "array",
+      "description": "Provide target search keywords or topics to query Google SERPs. Enter one search term per line or pass as an array.",
+      "editor": "stringList",
+      "prefill": [
+        "What are the top 5 CRM tools",
+        "Best Python web scraping frameworks"
+      ]
+    },
+    "page_depth": {
+      "title": "Page Scraping Depth",
+      "type": "integer",
+      "description": "Number of SERP pagination pages to extract per query (1 to 5).",
+      "default": 1,
+      "minimum": 1,
+      "maximum": 5
+    },
+    "country_code": {
+      "title": "Geographic Country Code",
+      "type": "string",
+      "description": "Two-letter ISO country code for geo-location (e.g. us, ph, uk, ca, th, de).",
+      "default": "us"
+    },
+    "language_code": {
+      "title": "Search Language Code",
+      "type": "string",
+      "description": "Two-letter ISO language code (e.g. en, es, fr, th, de).",
+      "default": "en"
+    },
+    "include_paa": {
+      "title": "Extract People Also Ask (PAA)",
+      "type": "boolean",
+      "description": "Extract related question blocks and answer snippets.",
+      "default": true
+    },
+    "include_paid_ads": {
+      "title": "Extract Sponsored Ads (PPC)",
+      "type": "boolean",
+      "description": "Extract sponsored Google Ads and destination URLs.",
+      "default": true
+    }
+  },
+  "required": [
+    "search_queries"
+  ]
+}
