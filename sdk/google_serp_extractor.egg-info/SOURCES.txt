@@ -1,0 +1,9 @@
+README.md
+setup.py
+google_serp_extractor/__init__.py
+google_serp_extractor/client.py
+google_serp_extractor.egg-info/PKG-INFO
+google_serp_extractor.egg-info/SOURCES.txt
+google_serp_extractor.egg-info/dependency_links.txt
+google_serp_extractor.egg-info/requires.txt
+google_serp_extractor.egg-info/top_level.txt
