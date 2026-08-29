@@ -1,0 +1,12 @@
+{
+  "actorSpecification": 1,
+  "name": "google-serp-ai",
+  "title": "Google SERP & Search Intelligence Extractor Pro",
+  "description": "Extract organic search rankings, sponsored ads, People Also Ask queries, and rich snippets directly from Google SERPs. Custom geographic targeting, language selection, and structured JSON export.",
+  "version": "1.0.0",
+  "meta": {
+    "templateId": "python-start"
+  },
+  "input": "./input_schema.json",
+  "dockerfile": "../Dockerfile"
+}
