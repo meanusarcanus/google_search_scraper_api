@@ -1,0 +1,423 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Google SERP & Search Intelligence Extractor API",
+    "description": "Extract organic search rankings, sponsored ads, and People Also Ask queries with custom geolocation and page depth controls.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "summary": "Health Check",
+        "operationId": "health_check_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/search": {
+      "post": {
+        "summary": "Execute Serp Search",
+        "operationId": "execute_serp_search_api_v1_search_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchAPIResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Execute Serp Search Get",
+        "operationId": "execute_serp_search_get_api_v1_search_get",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Target search query",
+              "title": "Q"
+            },
+            "description": "Target search query"
+          },
+          {
+            "name": "page_depth",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 5,
+              "minimum": 1,
+              "default": 1,
+              "title": "Page Depth"
+            }
+          },
+          {
+            "name": "country_code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "us",
+              "title": "Country Code"
+            }
+          },
+          {
+            "name": "language_code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "en",
+              "title": "Language Code"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "OrganicItem": {
+        "properties": {
+          "position": {
+            "type": "integer",
+            "title": "Position"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "domain": {
+            "type": "string",
+            "title": "Domain"
+          },
+          "snippet": {
+            "type": "string",
+            "title": "Snippet"
+          },
+          "sitelinks": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sitelinks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "position",
+          "title",
+          "url",
+          "domain",
+          "snippet"
+        ],
+        "title": "OrganicItem"
+      },
+      "SearchAPIResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "total_queries": {
+            "type": "integer",
+            "title": "Total Queries"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/SearchResponseItem"
+            },
+            "type": "array",
+            "title": "Results"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "total_queries",
+          "results"
+        ],
+        "title": "SearchAPIResponse"
+      },
+      "SearchRequest": {
+        "properties": {
+          "search_queries": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Search Queries",
+            "description": "List of search queries or topics to query Google SERPs"
+          },
+          "page_depth": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 5.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page Depth",
+            "description": "Number of SERP pagination pages to extract per query",
+            "default": 1
+          },
+          "country_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Country Code",
+            "description": "Two-letter ISO country code for geo-location (e.g. us, ph, uk, th)",
+            "default": "us"
+          },
+          "language_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language Code",
+            "description": "Two-letter language code (e.g. en, es, fr, th)",
+            "default": "en"
+          },
+          "include_paa": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Include Paa",
+            "description": "Extract People Also Ask (PAA) question blocks",
+            "default": true
+          },
+          "include_paid_ads": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Include Paid Ads",
+            "description": "Extract sponsored PPC Google Ads",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "search_queries"
+        ],
+        "title": "SearchRequest"
+      },
+      "SearchResponseItem": {
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "title": "Search Query"
+          },
+          "country_code": {
+            "type": "string",
+            "title": "Country Code"
+          },
+          "language_code": {
+            "type": "string",
+            "title": "Language Code"
+          },
+          "pages_scraped": {
+            "type": "integer",
+            "title": "Pages Scraped"
+          },
+          "total_organic_results": {
+            "type": "integer",
+            "title": "Total Organic Results"
+          },
+          "organic_results": {
+            "items": {
+              "$ref": "#/components/schemas/OrganicItem"
+            },
+            "type": "array",
+            "title": "Organic Results"
+          },
+          "people_also_ask": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "People Also Ask"
+          },
+          "sponsored_ads": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sponsored Ads"
+          }
+        },
+        "type": "object",
+        "required": [
+          "search_query",
+          "country_code",
+          "language_code",
+          "pages_scraped",
+          "total_organic_results",
+          "organic_results"
+        ],
+        "title": "SearchResponseItem"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
