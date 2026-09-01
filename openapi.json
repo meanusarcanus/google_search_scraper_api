@@ -1,9 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Google SERP & Search Intelligence Extractor API",
-    "description": "Extract organic search rankings, sponsored ads, and People Also Ask queries with custom geolocation and page depth controls.",
-    "version": "1.0.0"
+    "title": "Google SERP & AI Agent Search Intelligence API",
+    "description": "Extract organic search rankings, sponsored ads, People Also Ask queries, and token-optimized Markdown context for AI LLMs and autonomous agents.",
+    "version": "1.1.0"
   },
   "paths": {
     "/api/v1/health": {
@@ -16,6 +16,80 @@
             "content": {
               "application/json": {
                 "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/search": {
+      "post": {
+        "summary": "Execute Agent Search",
+        "description": "Tavily & Exa Alternative: Returns token-clean Markdown context with citations for AI LLMs.",
+        "operationId": "execute_agent_search_api_v1_agent_search_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/extract": {
+      "post": {
+        "summary": "Execute Markdown Extract",
+        "description": "Universal URL-to-LLM-Markdown Scraper: Strips boilerplate and returns dense Markdown.",
+        "operationId": "execute_markdown_extract_api_v1_agent_extract_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarkdownExtractRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
               }
             }
           }
@@ -132,6 +206,90 @@
   },
   "components": {
     "schemas": {
+      "AgentSearchRequest": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "title": "Query",
+            "description": "Search query or research topic",
+            "example": "Latest developments in Quantum Computing 2026"
+          },
+          "max_results": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 10.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Results",
+            "description": "Number of top search results to include",
+            "default": 5
+          },
+          "max_tokens": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 8000.0,
+                "minimum": 200.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Tokens",
+            "description": "Max token budget for returned Markdown context",
+            "default": 2000
+          },
+          "include_full_content": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Include Full Content",
+            "description": "Fetch and extract full clean Markdown from landing pages",
+            "default": false
+          },
+          "country_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Country Code",
+            "description": "Two-letter ISO country code",
+            "default": "us"
+          },
+          "language_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language Code",
+            "description": "Two-letter language code",
+            "default": "en"
+          }
+        },
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "title": "AgentSearchRequest"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -144,6 +302,36 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "MarkdownExtractRequest": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "Target webpage URL to scrape into clean Markdown",
+            "example": "https://en.wikipedia.org/wiki/Artificial_intelligence"
+          },
+          "max_chars": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 50000.0,
+                "minimum": 500.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Chars",
+            "description": "Max characters to return",
+            "default": 10000
+          }
+        },
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "title": "MarkdownExtractRequest"
       },
       "OrganicItem": {
         "properties": {
