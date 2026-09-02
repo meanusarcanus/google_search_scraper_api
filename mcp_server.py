@@ -66,6 +66,30 @@ TOOLS = [
     }
 ]
 
+USAGE_FILE = Path.home() / ".mcp_google_serp_usage.json"
+
+def check_mcp_access():
+    import os
+    key = os.environ.get("RAPIDAPI_KEY") or os.environ.get("SERP_API_KEY")
+    if key:
+        return True, ""
+    count = 0
+    if USAGE_FILE.exists():
+        try:
+            with open(USAGE_FILE) as f:
+                count = json.load(f).get("count", 0)
+        except Exception:
+            pass
+    if count >= 10:
+        return False, "⚠️ Free trial quota (10 requests) reached for Google SERP AI Grounding MCP server.\nTo unlock unlimited search queries in Claude Desktop & Cursor IDE, please subscribe at: https://rapidapi.com/meanusarcanus/api/microsaas-agent-suite and add 'RAPIDAPI_KEY': 'your_key' to your MCP environment configuration."
+    count += 1
+    try:
+        with open(USAGE_FILE, "w") as f:
+            json.dump({"count": count}, f)
+    except Exception:
+        pass
+    return True, ""
+
 def handle_mcp_message(message: dict) -> dict:
     method = message.get("method")
     msg_id = message.get("id")
@@ -79,6 +103,16 @@ def handle_mcp_message(message: dict) -> dict:
             }
         }
     elif method == "tools/call":
+        allowed, err_msg = check_mcp_access()
+        if not allowed:
+            return {
+                "jsonrpc": "2.0",
+                "id": msg_id,
+                "result": {
+                    "content": [{"type": "text", "text": err_msg}]
+                }
+            }
+
         params = message.get("params", {})
         tool_name = params.get("name")
         args = params.get("arguments", {})
